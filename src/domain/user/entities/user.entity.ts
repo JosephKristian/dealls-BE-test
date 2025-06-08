@@ -1,0 +1,34 @@
+export class User {
+  id: string;
+  username: string;
+  email: string;
+  password: string;
+
+  // Audit fields
+  createdBy: string;
+  createdAt: Date;
+  updatedBy?: string;
+  updatedAt?: Date;
+  deletedBy?: string;
+  deletedAt?: Date;
+
+  // Soft delete flag
+  isDeleted: boolean;
+
+  constructor(props: {
+    id: string;
+    username: string;
+    email: string;
+    password: string;
+    createdBy: string;
+    createdAt: Date;
+    updatedBy?: string;
+    updatedAt?: Date;
+    deletedBy?: string;
+    deletedAt?: Date;
+    isDeleted?: boolean;
+  }) {
+    Object.assign(this, props);
+    this.isDeleted = props.isDeleted ?? false;
+  }
+}
