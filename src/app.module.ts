@@ -1,10 +1,11 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { UserModule } from './presentation/user/user.module';
-import { AuthModule } from './presentation/auth/auth.module';
+import { AppController } from 'src/app.controller';
+import { AppService } from 'src/app.service';
+import { UserModule } from 'src/presentation/user/user.module';
+import { AuthModule } from 'src/presentation/auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
-import { AttendanceModule } from './presentation/attendance/attendance.module';
+import { AttendanceModule } from 'src/presentation/attendance/attendance.module';
+import { OvertimeModule } from 'src/presentation/overtime/overtime.module';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { AttendanceModule } from './presentation/attendance/attendance.module';
     UserModule,
     AuthModule,
     AttendanceModule,
+    OvertimeModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -17,6 +17,7 @@ export class Attendance {
       ...props,
     });
   }
+  
 
   id?: string;
   userId: string;

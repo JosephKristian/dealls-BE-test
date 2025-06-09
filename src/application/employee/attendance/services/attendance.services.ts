@@ -1,6 +1,7 @@
 import { Injectable, BadRequestException, ForbiddenException, NotFoundException } from '@nestjs/common';
+import { isValid } from 'date-fns';
 import { Attendance } from 'src/domain/user/entities/attendance.entity';
-import { AttendanceRepository } from 'src/infrastructure/user/repositories/attendance.repository.prisma';
+import { AttendanceRepository } from 'src/infrastructure/employee/attendance/attendance.repository.prisma';
 import { UserRepository } from 'src/infrastructure/user/repositories/user.repository.prisma';
 import { AuditLogService } from 'src/shared/audit-log/services/audit-log.service';
 
@@ -26,7 +27,17 @@ export class AttendanceService {
       throw new ForbiddenException('Only active employees can submit attendance');
     }
 
-    const today = customDate ? new Date(customDate) : new Date();
+    let today: Date;
+    if (customDate) {
+      const parsed = new Date(customDate);
+      if (!isValid(parsed)) {
+        throw new BadRequestException('Invalid custom date format');
+      }
+      today = parsed;
+    } else {
+      today = new Date();
+    }
+
     const day = today.getDay();
     console.log('[submitAttendance] Today is:', today.toDateString(), 'Day:', day);
 

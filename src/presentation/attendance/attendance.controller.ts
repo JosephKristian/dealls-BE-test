@@ -7,8 +7,8 @@ import {
 } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/shared/jwt/guard/jwt-auth.guard';
 import { AuditLogService } from 'src/shared/audit-log/services/audit-log.service';
-import { AttendanceResponseDto } from 'src/application/attendance/dto/attendance-response.dto';
-import { AttendanceService } from 'src/application/attendance/services/attendance.services';
+import { AttendanceResponseDto } from 'src/application/employee/attendance/dto/attendance-response.dto';
+import { AttendanceService } from 'src/application/employee/attendance/services/attendance.services';
 import { CurrentUser } from 'src/shared/decorators/current-user.decorator';
 import { randomUUID } from 'crypto';
 

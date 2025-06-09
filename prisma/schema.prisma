@@ -28,6 +28,7 @@ model User {
   deletedAt DateTime?
 
   attendances Attendance[]
+  overtimes   Overtime[]
 }
 
 model AuditLog {
@@ -59,4 +60,20 @@ model Attendance {
   deletedAt DateTime?
 
   @@unique([userId, date, isDeleted])
+}
+
+model Overtime {
+  id        String    @id @default(uuid())
+  userId    String
+  date      DateTime
+  hours     Float
+  createdBy String?
+  createdAt DateTime  @default(now())
+  updatedBy String?
+  updatedAt DateTime?
+  isDeleted Boolean   @default(false)
+  deletedBy String?
+  deletedAt DateTime?
+
+  user User @relation(fields: [userId], references: [id])
 }

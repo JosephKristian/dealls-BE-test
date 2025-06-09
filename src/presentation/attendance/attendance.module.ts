@@ -2,8 +2,8 @@
 import { Module } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
 
-import { AttendanceService } from 'src/application/attendance/services/attendance.services';
-import { AttendanceRepository } from 'src/infrastructure/user/repositories/attendance.repository.prisma';
+import { AttendanceService } from 'src/application/employee/attendance/services/attendance.services';
+import { AttendanceRepository } from 'src/infrastructure/employee/attendance/attendance.repository.prisma';
 import { UserRepository } from 'src/infrastructure/user/repositories/user.repository.prisma';
 import { AuditLogService } from 'src/shared/audit-log/services/audit-log.service';
 
