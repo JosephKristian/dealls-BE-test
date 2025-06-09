@@ -14,16 +14,49 @@ generator client {
 }
 
 model User {
-  id         String   @id @default(uuid())
-  username   String   @unique
-  email      String   @unique
-  password   String
-  isDeleted  Boolean  @default(false)
-  createdBy  String?
-  createdAt  DateTime @default(now())
-  updatedBy  String?
-  updatedAt  DateTime?
-  deletedBy  String?
-  deletedAt  DateTime?
+  id        String    @id @default(uuid())
+  username  String    @unique
+  email     String    @unique
+  password  String
+  role      String
+  isDeleted Boolean   @default(false)
+  createdBy String?
+  createdAt DateTime  @default(now())
+  updatedBy String?
+  updatedAt DateTime?
+  deletedBy String?
+  deletedAt DateTime?
+
+  attendances Attendance[]
 }
 
+model AuditLog {
+  id          String   @id @default(uuid())
+  entity      String
+  entityId    String   @map("entity_id")
+  action      String
+  performedBy String?  @map("performed_by")
+  ipAddress   String?  @map("ip_address")
+  requestId   String?  @map("request_id")
+  timestamp   DateTime @default(now())
+  oldData     Json?    @map("old_data")
+  newData     Json?    @map("new_data")
+
+  @@map("audit_logs")
+}
+
+model Attendance {
+  id        String    @id @default(uuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id])
+  date      DateTime
+  isDeleted Boolean   @default(false)
+  createdBy String?
+  createdAt DateTime  @default(now())
+  updatedBy String?
+  updatedAt DateTime?
+  deletedBy String?
+  deletedAt DateTime?
+
+  @@unique([userId, date, isDeleted])
+}

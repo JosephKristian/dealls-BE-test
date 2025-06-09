@@ -3,6 +3,7 @@ export class User {
   username: string;
   email: string;
   password: string;
+  role: string;
 
   // Audit fields
   createdBy: string;
@@ -20,6 +21,7 @@ export class User {
     username: string;
     email: string;
     password: string;
+    role: string;
     createdBy: string;
     createdAt: Date;
     updatedBy?: string;

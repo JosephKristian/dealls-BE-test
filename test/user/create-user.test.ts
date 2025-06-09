@@ -1,6 +1,6 @@
 import 'dotenv/config';
 import { PrismaClient } from '@prisma/client';
-import { CreateUserDto } from 'src/application/user/dto/create-user.dto';
+import { CreateUserDto } from 'src/application/user/dto/user.dto';
 import { CreateUserUseCase } from 'src/application/user/use-cases/create-user.use-case';
 import { UserRepository } from 'src/infrastructure/user/repositories/user.repository.prisma';
 
