@@ -7,10 +7,10 @@ import { AttendanceRepository } from 'src/infrastructure/employee/attendance/att
 import { UserRepository } from 'src/infrastructure/user/repositories/user.repository.prisma';
 import { AuditLogService } from 'src/shared/audit-log/services/audit-log.service';
 
-import { AttendanceController } from 'src/presentation/attendance/attendance.controller';
+import { AttendanceController } from 'src/presentation/employee/attendance/attendance.controller';
 import { DatabaseModule } from 'src/shared/database/database.module';
 import { JwtModule } from '@nestjs/jwt';
-import { AuthModule } from '../auth/auth.module';
+import { AuthModule } from '../../auth/auth.module';
 import { SECRET } from 'src/common/constants/constanta';
 
 @Module({

@@ -7,7 +7,7 @@ import { JwtAuthGuard } from 'src/shared/jwt/guard/jwt-auth.guard';
 
 @Controller('employee')
 export class OvertimeController {
-  constructor(private readonly overtimeService: OvertimeService) {}
+  constructor(private readonly overtimeService: OvertimeService) { }
 
   @Post('overtime')
   @UseGuards(JwtAuthGuard)
@@ -21,7 +21,6 @@ export class OvertimeController {
     const createdBy = `${user.id}|${ipAddress}|${userAgent}`;
     const customDate = req.body.date
     const requestId = req.headers['x-request-id'];
-
     const overtime = await this.overtimeService.submitOvertime(user.id, dto.hours, createdBy, customDate, requestId);
     return {
       statusCode: 201,

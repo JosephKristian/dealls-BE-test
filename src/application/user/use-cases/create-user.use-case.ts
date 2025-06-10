@@ -1,8 +1,8 @@
 
-import { IUserRepository, IUserRepositoryToken } from 'src/domain/user/repositories/user.repository';
+import { IUserRepository, IUserRepositoryToken } from 'src/domain/repositories/user.repository';
 import { CreateUserDto } from '../dto/user.dto';
 import { v4 as uuidv4 } from 'uuid';
-import { User } from 'src/domain/user/entities/user.entity';
+import { User } from 'src/domain/entities/user.entity';
 import { Inject, Injectable } from '@nestjs/common';
 @Injectable()
 export class CreateUserUseCase {

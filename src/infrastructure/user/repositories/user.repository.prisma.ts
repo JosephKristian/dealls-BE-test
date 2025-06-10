@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
-import { User } from 'src/domain/user/entities/user.entity';
-import { IUserRepository } from 'src/domain/user/repositories/user.repository';
+import { User } from 'src/domain/entities/user.entity';
+import { IUserRepository } from 'src/domain/repositories/user.repository';
 import { PrismaService } from 'src/shared/database/prisma.service';
 
 @Injectable()
@@ -61,6 +61,16 @@ export class UserRepository implements IUserRepository {
     }
   }
 
+  async findAllEmployees(): Promise<User[]> {
+    const employees = await this.prisma.user.findMany({
+      where: {
+        role: 'EMPLOYEE',
+        isDeleted: false,
+      },
+    });
+
+    return employees.map((user) => this.toDomain(user));
+  }
 
   async findByUsername(username: string): Promise<User | null> {
     const found = await this.prisma.user.findFirst({
@@ -109,6 +119,7 @@ export class UserRepository implements IUserRepository {
       email: raw.email,
       password: raw.password,
       role: raw.role,
+      salary: raw.salary,
       createdBy: raw.createdBy,
       createdAt: raw.createdAt,
       updatedBy: raw.updatedBy,

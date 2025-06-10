@@ -5,6 +5,7 @@ export class Overtime {
     date: Date;
     hours: number;
     isDeleted?: boolean;
+    isLocked?: boolean;
     createdBy?: string | null;
     createdAt?: Date;
     updatedBy?: string | null;
@@ -24,6 +25,7 @@ export class Overtime {
   date: Date;
   hours: number;
   isDeleted: boolean;
+  isLocked: boolean;
   createdBy?: string | null;
   createdAt?: Date;
   updatedBy?: string | null;

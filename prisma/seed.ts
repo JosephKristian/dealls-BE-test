@@ -9,7 +9,6 @@ async function main() {
   const createdBy = 'system';
   const now = new Date();
 
-  // Hapus user selain admin dalam transaksi terpisah
   await prisma.$transaction(async (tx) => {
     await tx.user.deleteMany({
       where: {
@@ -18,19 +17,18 @@ async function main() {
     });
   });
 
-  // Ambil semua username untuk cek duplikat
   const existingUsers = await prisma.user.findMany({
     select: { username: true },
   });
   const existingUsernames = new Set(existingUsers.map((u) => u.username));
 
-  // Buat employees dan audit log satu per satu supaya dapat id dan bisa dibuat audit lognya
   for (let i = 0; i < 100; i++) {
     const username = faker.internet.username().toLowerCase() + i;
     if (existingUsernames.has(username)) continue;
 
     const email = faker.internet.email().toLowerCase();
     const password = await bcrypt.hash('password123', SALT_ROUNDS);
+    const salary = faker.number.int({ min: 3_000_000, max: 10_000_000 }); // gaji antara 3jt - 10jt
 
     const user = await prisma.user.create({
       data: {
@@ -38,6 +36,7 @@ async function main() {
         email,
         password,
         role: 'EMPLOYEE',
+        salary,
         createdBy,
         createdAt: now,
         updatedAt: now,
@@ -58,18 +57,20 @@ async function main() {
           username: user.username,
           email: user.email,
           role: user.role,
+          salary: user.salary,
         },
       },
     });
   }
 
-  // Buat admin jika belum ada
   const adminUser = await prisma.user.findUnique({
     where: { username: 'admin' },
   });
 
   if (!adminUser) {
     const adminPassword = await bcrypt.hash('admin123', SALT_ROUNDS);
+    
+
     const admin = await prisma.user.create({
       data: {
         username: 'admin',
@@ -96,6 +97,7 @@ async function main() {
           username: admin.username,
           email: admin.email,
           role: admin.role,
+          salary: admin.salary,
         },
       },
     });

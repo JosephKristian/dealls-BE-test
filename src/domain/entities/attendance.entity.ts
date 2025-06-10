@@ -4,6 +4,7 @@ export class Attendance {
     userId: string;
     date: Date;
     isDeleted?: boolean;
+    isLocked?: boolean;
     createdBy?: string;
     createdAt?: Date;
     updatedBy?: string;
@@ -17,12 +18,13 @@ export class Attendance {
       ...props,
     });
   }
-  
+
 
   id?: string;
   userId: string;
   date: Date;
   isDeleted?: boolean;
+  isLocked?: boolean;
   createdBy?: string;
   createdAt?: Date;
   updatedBy?: string;

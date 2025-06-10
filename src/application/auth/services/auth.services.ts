@@ -4,7 +4,7 @@ import * as bcrypt from 'bcrypt';
 import { UserRole } from 'src/application/user/dto/user.dto';
 import { CreateUserUseCase } from 'src/application/user/use-cases/create-user.use-case';
 import { SECRET } from 'src/common/constants/constanta';
-import { User } from 'src/domain/user/entities/user.entity';
+import { User } from 'src/domain/entities/user.entity';
 import { UserRepository } from 'src/infrastructure/user/repositories/user.repository.prisma';
 import { PrismaService } from 'src/shared/database/prisma.service';
 
@@ -34,6 +34,7 @@ export class AuthService {
 
   async generateAccessToken(payload: any): Promise<string> {
     const secret = SECRET;
+    console.log('JWT Payload:', payload);
     const accessToken = this.jwtService.sign(payload, {
       secret,
       expiresIn: '1d',
@@ -42,7 +43,9 @@ export class AuthService {
   }
 
   async login(user: any) {
-    const payload = { sub: user.id, username: user.username };
+    const payload = { sub: user.id, username: user.username, role: user.role };
+    console.log(`ROLECHECK${user.role}`)
+    console.log(`ROLECHECK${payload.role}`)
     const accessToken = await this.generateAccessToken(payload);
     
 

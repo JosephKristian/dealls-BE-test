@@ -1,6 +1,6 @@
 import { Injectable, BadRequestException, ForbiddenException, NotFoundException } from '@nestjs/common';
 import { isValid } from 'date-fns';
-import { Attendance } from 'src/domain/user/entities/attendance.entity';
+import { Attendance } from 'src/domain/entities/attendance.entity';
 import { AttendanceRepository } from 'src/infrastructure/employee/attendance/attendance.repository.prisma';
 import { UserRepository } from 'src/infrastructure/user/repositories/user.repository.prisma';
 import { AuditLogService } from 'src/shared/audit-log/services/audit-log.service';
@@ -67,7 +67,6 @@ export class AttendanceService {
         },
       });
       return updated
-
     }
 
     const attendance = new Attendance({

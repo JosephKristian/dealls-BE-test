@@ -13,6 +13,7 @@ import { JwtStrategy } from 'src/shared/jwt/strategies/jwt.strategy';
 import { RefreshJwtStrategy } from 'src/shared/jwt/strategies/refresh-jwt.strategy';
 import { LocalStrategy } from 'src/shared/jwt/strategies/local.strategy';
 import { SECRET } from 'src/common/constants/constanta';
+import { RolesGuard } from 'src/shared/jwt/guard/roles.guard';
 
 @Module({
     imports: [
@@ -27,10 +28,12 @@ import { SECRET } from 'src/common/constants/constanta';
         JwtStrategy,
         RefreshJwtStrategy,
         LocalStrategy,
+        RolesGuard
     ],
     exports: [
         AuthService,
         JwtStrategy,
+        RolesGuard,
         RefreshJwtStrategy,
         LocalStrategy,
         JwtModule.register({})

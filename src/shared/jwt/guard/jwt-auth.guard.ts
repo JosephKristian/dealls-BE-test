@@ -13,6 +13,10 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
       throw err || new Error('Unauthorized');
     }
 
+
+    const request = context.switchToHttp().getRequest();
+    request.user = user;
+
     return user;
   }
 }

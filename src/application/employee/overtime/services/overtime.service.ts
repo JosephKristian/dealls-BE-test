@@ -1,8 +1,8 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { Inject } from '@nestjs/common';
 import { isValid, parseISO } from 'date-fns';
-import { Overtime } from 'src/domain/user/entities/overtime.entity';
-import { IOvertimeRepository, IOvertimeRepositoryToken } from 'src/domain/user/repositories/overtime.repository';
+import { Overtime } from 'src/domain/entities/overtime.entity';
+import { IOvertimeRepository, IOvertimeRepositoryToken } from 'src/domain/repositories/overtime.repository';
 import { AuditLogService } from 'src/shared/audit-log/services/audit-log.service';
 
 @Injectable()

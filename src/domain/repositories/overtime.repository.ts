@@ -7,5 +7,6 @@ export interface IOvertimeRepository {
   create(overtime: Overtime): Promise<Overtime>;
   findByUserIdAndDate(userId: string, date: Date): Promise<Overtime | null>;
   updateTimestamp(id: string, updatedBy: string, hours: number): Promise<Overtime>;
+  lockOvertimeById(id: string, lockedBy: string, payrollId:string): Promise<Overtime>;
   softDelete(id: string, deletedBy: string): Promise<void>;
 }
