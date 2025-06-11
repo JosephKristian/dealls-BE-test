@@ -4,7 +4,7 @@ import { PassportModule } from '@nestjs/passport';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
 import { AuthController } from './auth.controller';
-import { AuthService } from 'src/application/auth/services/auth.services';
+import { AuthService } from 'src/application/auth/services/auth.service';
 
 import { PrismaService } from 'src/shared/database/prisma.service';
 import { AuditLogService } from 'src/shared/audit-log/services/audit-log.service';

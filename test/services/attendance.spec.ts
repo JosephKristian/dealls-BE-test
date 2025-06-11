@@ -4,7 +4,7 @@ import { UserRepository } from 'src/infrastructure/user/repositories/user.reposi
 import { AuditLogService } from 'src/shared/audit-log/services/audit-log.service';
 import { BadRequestException, ForbiddenException, NotFoundException } from '@nestjs/common';
 import { Attendance } from 'src/domain/entities/attendance.entity';
-import { AttendanceService } from 'src/application/employee/attendance/services/attendance.services';
+import { AttendanceService } from 'src/application/employee/attendance/services/attendance.service';
 
 describe('AttendanceService', () => {
   let service: AttendanceService;

@@ -33,6 +33,7 @@ describe('CreateUserUseCase', () => {
         const dto: CreateUserDto = {
             username: 'joeyttest',
             email: 'joey@ttest.com',
+            
             password: '123456',
             createdBy: 'system',
             role: UserRole.Employee,

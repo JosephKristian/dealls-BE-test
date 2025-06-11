@@ -8,7 +8,7 @@ import {
 import { JwtAuthGuard } from 'src/shared/jwt/guard/jwt-auth.guard';
 import { AuditLogService } from 'src/shared/audit-log/services/audit-log.service';
 import { AttendanceResponseDto } from 'src/application/employee/attendance/dto/attendance-response.dto';
-import { AttendanceService } from 'src/application/employee/attendance/services/attendance.services';
+import { AttendanceService } from 'src/application/employee/attendance/services/attendance.service';
 import { CurrentUser } from 'src/shared/decorators/current-user.decorator';
 
 

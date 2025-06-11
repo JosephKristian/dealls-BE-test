@@ -1,6 +1,6 @@
 import { Controller, Post, Body, Request, UseGuards, UseInterceptors, Req } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/shared/jwt/guard/jwt-auth.guard';     // guard jwt untuk proteksi route
-import { AuthService } from 'src/application/auth/services/auth.services';
+import { AuthService } from 'src/application/auth/services/auth.service';
 import { CreateUserDto } from 'src/application/user/dto/user.dto';
 import { AuditLogService } from 'src/shared/audit-log/services/audit-log.service';
 import { LocalAuthGuard } from 'src/shared/jwt/guard/local-auth.guard';

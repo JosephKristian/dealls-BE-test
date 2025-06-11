@@ -11,6 +11,8 @@
     "test:user": "cross-env NODE_ENV=test jest test/user/create-user.test.ts",
     "test:auth": "cross-env NODE_ENV=test jest test/services/auth.spec.ts",
     "test:attendance": "cross-env NODE_ENV=test jest test/services/attendance.spec.ts",
+    "test:overtime": "cross-env NODE_ENV=test jest test/services/overtime.spec.ts",
+    "test:reimbursement": "cross-env NODE_ENV=test jest test/services/reimbursement.spec.ts",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",

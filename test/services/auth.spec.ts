@@ -7,7 +7,7 @@ import { CreateUserUseCase } from 'src/application/user/use-cases/create-user.us
 import * as bcrypt from 'bcrypt';
 import { BadRequestException } from '@nestjs/common';
 import { UserRole } from 'src/application/user/dto/user.dto';
-import { AuthService } from 'src/application/auth/services/auth.services';
+import { AuthService } from 'src/application/auth/services/auth.service';
 
 describe('AuthService', () => {
     let service: AuthService;

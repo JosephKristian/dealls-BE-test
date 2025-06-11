@@ -174,9 +174,17 @@ Uses `.env.test` for test configuration.
 ```bash
 npm run migrate:test 
 ```
-attendance service
+Attendance Service Test
 ```bash
 npm run migrate:attendance 
+```
+Overtime Service Test
+```bash
+npm run migrate:overtime 
+```
+Reimbursement Service Test
+```bash
+npm run migrate:reimbursement 
 ```
 
 ```bash
