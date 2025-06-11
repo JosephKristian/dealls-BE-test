@@ -1,7 +1,7 @@
 
 import { Module } from "@nestjs/common";
 import { AuthModule } from "src/presentation/auth/auth.module";
-import { PayrollService } from "src/application/admin/payroll/services/payroll.services";
+import { PayrollService } from "src/application/admin/payroll/services/payroll.service";
 import { PrismaClient } from "@prisma/client";
 import { AuditLogService } from "src/shared/audit-log/services/audit-log.service";
 import { UserRepository } from "src/infrastructure/user/repositories/user.repository.prisma";

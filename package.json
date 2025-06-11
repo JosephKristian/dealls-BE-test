@@ -13,6 +13,7 @@
     "test:attendance": "cross-env NODE_ENV=test jest test/services/attendance.spec.ts",
     "test:overtime": "cross-env NODE_ENV=test jest test/services/overtime.spec.ts",
     "test:reimbursement": "cross-env NODE_ENV=test jest test/services/reimbursement.spec.ts",
+    "test:payroll": "cross-env NODE_ENV=test jest test/services/payroll.spec.ts",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",

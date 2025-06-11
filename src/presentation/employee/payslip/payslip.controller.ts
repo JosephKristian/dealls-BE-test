@@ -1,6 +1,6 @@
 import { BadRequestException, Controller, Get, NotFoundException, Param, UseGuards } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
-import { PayrollService } from 'src/application/admin/payroll/services/payroll.services';
+import { PayrollService } from 'src/application/admin/payroll/services/payroll.service';
 import { PayslipResponseDto } from 'src/application/employee/payslip/dto/payslip-response.dto';
 import { CurrentUser } from 'src/shared/decorators/current-user.decorator';
 import { JwtAuthGuard } from 'src/shared/jwt/guard/jwt-auth.guard';

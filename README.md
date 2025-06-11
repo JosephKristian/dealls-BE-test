@@ -99,6 +99,57 @@ npm run start:dev
 
 ---
 
+
+## 🗂️ Audit Log System
+
+Sistem ini dilengkapi dengan fitur audit log untuk mencatat setiap perubahan data penting dalam sistem, memastikan **transparansi**, **traceability**, dan **keamanan operasional**.
+
+### 🔍 Audit Log Table
+
+Audit log tersimpan dalam tabel `audit_logs`, dengan struktur Prisma model berikut:
+
+```ts
+model AuditLog {
+  id          String   @id @default(uuid())
+  entity      String
+  entityId    String   @map("entity_id")
+  action      String
+  performedBy String?  @map("performed_by")
+  ipAddress   String?  @map("ip_address")
+  requestId   String?  @map("request_id")
+  timestamp   DateTime @default(now())
+  oldData     Json?    @map("old_data")
+  newData     Json?    @map("new_data")
+
+  @@map("audit_logs")
+}
+```
+
+### 📌 Fungsi Audit Log
+
+Setiap aksi penting seperti `create`, `update`, atau `delete` terhadap entitas seperti **Payroll**, **Attendance**, **Overtime**, dan **Reimbursement** akan menghasilkan log dengan informasi berikut:
+
+| Field         | Deskripsi                                                      |
+| ------------- | -------------------------------------------------------------- |
+| `entity`      | Nama entitas (contoh: `Payroll`, `Attendance`)                 |
+| `entityId`    | ID dari entitas yang dimodifikasi                              |
+| `action`      | Jenis aksi (`CREATE`, `UPDATE`, `DELETE`)                      |
+| `performedBy` | User yang melakukan aksi                                       |
+| `ipAddress`   | Alamat IP pengakses (jika disediakan)                          |
+| `requestId`   | ID unik untuk setiap request (jika middleware-nya diaktifkan)  |
+| `timestamp`   | Waktu log dibuat                                               |
+| `oldData`     | Snapshot data sebelum perubahan (untuk `UPDATE` atau `DELETE`) |
+| `newData`     | Snapshot data setelah perubahan (untuk `CREATE` atau `UPDATE`) |
+
+### 🧠 Manfaat
+
+* 🔎 **Audit Trail**: Lacak siapa yang mengubah data, kapan, dan apa yang berubah.
+* 🛡️ **Security**: Membantu dalam investigasi jika terjadi perubahan data yang tidak sah.
+* 🔁 **Traceability**: Setiap request bisa dilacak berdasarkan `requestId` dari middleware.
+
+
+---
+
 ## 📬 Postman Collection
 
 The Postman collection for testing the API is available inside the `/postman` folder.

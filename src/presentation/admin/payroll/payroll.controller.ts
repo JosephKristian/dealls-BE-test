@@ -14,7 +14,7 @@ import {
     Query,
 } from '@nestjs/common';
 import { RunPayrollDto } from 'src/application/admin/payroll/dto/payroll-submit.dto';
-import { PayrollService } from 'src/application/admin/payroll/services/payroll.services';
+import { PayrollService } from 'src/application/admin/payroll/services/payroll.service';
 import { Roles } from 'src/shared/decorators/roles.decorator';
 import { JwtAuthGuard } from 'src/shared/jwt/guard/jwt-auth.guard';
 import { RolesGuard } from 'src/shared/jwt/guard/roles.guard';
