@@ -28,13 +28,27 @@ nvm use 20
 npm install
 ```
 
+
+---
+
 ### 4. Configure Environment Variables
 
 ```bash
 cp .env.example .env
 ```
 
-> ✅ For testing, create and configure `.env.test` as needed.
+Edit `.env` dan sesuaikan dengan koneksi database PostgreSQL Anda:
+
+```env
+DATABASE_URL="postgresql://<your_db_user>:<your_db_password>@<your_db_host>:<your_db_port>/<your_db_name>?schema=public"
+JWT_SECRET=yourSecretKey
+```
+
+> ⚠️ Gantilah nilai `DATABASE_URL` sesuai dengan kredensial dan konfigurasi PostgreSQL lokal Anda.
+
+Untuk pengujian, buat file `.env.test` berdasarkan konfigurasi `.env` dan sesuaikan dengan test database Anda.
+
+---
 
 ### 5. Run Database Migration
 
