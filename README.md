@@ -101,7 +101,7 @@ npm run start:dev
 
 
 ## 🗂️ Audit Log System
-
+ 
 Sistem ini dilengkapi dengan fitur audit log untuk mencatat setiap perubahan data penting dalam sistem, memastikan **transparansi**, **traceability**, dan **keamanan operasional**.
 
 ### 🔍 Audit Log Table
