@@ -31,8 +31,8 @@ describe('CreateUserUseCase', () => {
 
     it('should create a user successfully with valid data', async () => {
         const dto: CreateUserDto = {
-            username: 'joeytest',
-            email: 'joey@test.com',
+            username: 'joeyttest',
+            email: 'joey@ttest.com',
             password: '123456',
             createdBy: 'system',
             role: UserRole.Employee,

@@ -9,6 +9,8 @@
     "seed": "ts-node prisma/seed.ts",
     "migrate:test": "dotenv -e .env.test -- prisma migrate deploy",
     "test:user": "cross-env NODE_ENV=test jest test/user/create-user.test.ts",
+    "test:auth": "cross-env NODE_ENV=test jest test/services/auth.spec.ts",
+    "test:attendance": "cross-env NODE_ENV=test jest test/services/attendance.spec.ts",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
@@ -27,6 +29,7 @@
     "@nestjs/common": "^11.0.1",
     "@nestjs/config": "^4.0.2",
     "@nestjs/core": "^11.0.1",
+
     "@nestjs/jwt": "^11.0.0",
     "@nestjs/passport": "^11.0.5",
     "@nestjs/platform-express": "^11.0.1",

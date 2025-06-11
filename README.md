@@ -171,6 +171,13 @@ https://web.postman.co/workspace/ca6cbfb4-77f6-4403-8b4d-04e8c8ea668f
 Uses `.env.test` for test configuration.
 
 ### Run Tests:
+```bash
+npm run migrate:test 
+```
+attendance service
+```bash
+npm run migrate:attendance 
+```
 
 ```bash
 npm run migrate:test 
