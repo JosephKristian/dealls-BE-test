@@ -79,6 +79,20 @@ export class UserRepository implements IUserRepository {
     return found ? this.toDomain(found) : null;
   }
 
+  async findAllByRole(role: string): Promise<User[]> {
+    const users = await this.prisma.user.findMany({
+      where: {
+        role,
+        isDeleted: false,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+
+    return users.map(this.toDomain);
+  }
+
   async findByEmail(email: string): Promise<User | null> {
     const found = await this.prisma.user.findFirst({
       where: { email, isDeleted: false },

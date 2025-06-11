@@ -1,11 +1,11 @@
-import { IsDateString, IsNotEmpty } from 'class-validator';
+import { IsNotEmpty, IsNumber } from 'class-validator';
 
 export class RunPayrollDto {
   @IsNotEmpty()
-  @IsDateString()
-  periodStart: Date;
+  @IsNumber()
+  year: number;
 
   @IsNotEmpty()
-  @IsDateString()
-  periodEnd: Date;
+  @IsNumber()
+  month: number;
 }

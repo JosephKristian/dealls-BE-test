@@ -8,6 +8,10 @@ import {
     Req,
     HttpException,
     BadRequestException,
+    Get,
+    Param,
+    NotFoundException,
+    Query,
 } from '@nestjs/common';
 import { RunPayrollDto } from 'src/application/admin/payroll/dto/payroll-submit.dto';
 import { PayrollService } from 'src/application/admin/payroll/services/payroll.services';
@@ -15,11 +19,45 @@ import { Roles } from 'src/shared/decorators/roles.decorator';
 import { JwtAuthGuard } from 'src/shared/jwt/guard/jwt-auth.guard';
 import { RolesGuard } from 'src/shared/jwt/guard/roles.guard';
 import { Request } from 'express';
+import { plainToInstance } from 'class-transformer';
+import { PayslipResponseDto } from 'src/application/employee/payslip/dto/payslip-response.dto';
+import { CreatePayrollPeriodDto } from 'src/application/admin/payroll/dto/payroll-period-submit.dto';
+import { EmployeeSimpleDto } from 'src/application/user/dto/user-employee-list.dto';
+import { E } from '@faker-js/faker/dist/airline-BUL6NtOJ';
 
 @Controller('admin')
 @UseGuards(JwtAuthGuard, RolesGuard)
 export class PayrollController {
-    constructor(private readonly payrollService: PayrollService) { }
+    constructor(
+        private readonly payrollService: PayrollService
+    ) { }
+
+    @Get('employees')
+    @Roles('ADMIN') // opsional jika perlu auth/role check
+    async getAllEmployees() {
+        const employees = await this.payrollService.findAllEmployees();
+        return plainToInstance(EmployeeSimpleDto, employees, {
+            excludeExtraneousValues: true,
+        });
+    }
+
+    @Post('payroll-period')
+    @Roles('ADMIN')
+    @HttpCode(HttpStatus.OK)
+    async createPayrollPeriod(
+        @Body() dto: CreatePayrollPeriodDto,
+        @Req() req: Request,
+    ): Promise<any> {
+        const user = req.user as { id: string; role: string };
+        const ipAddress = req.ip || req.headers['x-forwarded-for'] || null;
+        const userAgent = req.headers['user-agent'] || null;
+        const rawRequestId = req.headers['x-request-id'];
+        const requestId = Array.isArray(rawRequestId) ? rawRequestId[0] : rawRequestId || '';
+        const performedBy = `${user.id}|${ipAddress}|${userAgent}`;
+
+        return this.payrollService.createPayrollPeriod(dto, requestId, performedBy);
+    }
+
 
     @Post('run-payroll')
     @Roles('ADMIN')
@@ -30,19 +68,8 @@ export class PayrollController {
     ): Promise<{ success: boolean; details?: any }> {
         try {
             // Validate input dates
-            if (!dto.periodStart || !dto.periodEnd) {
+            if (!dto.month) {
                 throw new BadRequestException('Start and end dates are required');
-            }
-
-            const startDate = new Date(dto.periodStart);
-            const endDate = new Date(dto.periodEnd);
-
-            if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
-                throw new BadRequestException('Invalid date format');
-            }
-
-            if (startDate > endDate) {
-                throw new BadRequestException('Start date must be before end date');
             }
 
             const user = req.user as { id: string; role: string };
@@ -53,9 +80,10 @@ export class PayrollController {
                 : req.headers['x-request-id'];
             const performedBy = `${user.id}|${ipAddress}|${userAgent}`;
 
+
             const result = await this.payrollService.runPayroll(
-                startDate,
-                endDate,
+                dto.year,
+                dto.month,
                 performedBy,
                 requestId
             );
@@ -80,4 +108,36 @@ export class PayrollController {
             );
         }
     }
+
+    @Get('payslip-summary/:year/:month')
+    @UseGuards(JwtAuthGuard)
+    async getPayslip(
+        @Param('year') year: number,
+        @Param('month') month: number,
+        @Query('page') page: string = '1',
+        @Query('limit') limit: string = '10',
+    ) {
+        const parsedYear = Number(year);
+        const parsedMonth = Number(month);
+        const parsedPage = Number(page);
+        const parsedLimit = Number(limit);
+
+        if (isNaN(parsedYear) || isNaN(parsedMonth) || parsedMonth < 1 || parsedMonth > 12) {
+            throw new BadRequestException('Invalid year or month');
+        }
+        console.log("=== DEBUG ===")
+        const payroll = await this.payrollService.getAllPayslipByMonth(
+            year,
+            month,
+            parsedPage,
+            parsedLimit
+        );
+
+        if (!payroll) {
+            throw new NotFoundException('Payslip not found for the given month');
+        }
+
+        return payroll;
+    }
+
 }

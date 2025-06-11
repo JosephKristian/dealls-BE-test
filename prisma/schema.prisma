@@ -95,7 +95,6 @@ model Reimbursement {
   description String
   date        DateTime
 
-  // Audit fields
   createdAt DateTime  @default(now())
   createdBy String
   updatedAt DateTime?
@@ -110,11 +109,29 @@ model Reimbursement {
   @@index([userId])
 }
 
+model PayrollPeriod {
+  id          String    @id @default(uuid())
+  periodStart DateTime
+  periodEnd   DateTime
+  isLocked    Boolean   @default(false)
+  createdBy   String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime?
+  updatedBy   String?
+  deletedAt   DateTime?
+  deletedBy   String?
+  isDeleted   Boolean   @default(false)
+
+  payrolls Payroll[]
+
+  @@unique([periodStart, periodEnd])
+}
+
 model Payroll {
-  id                 String   @id @default(uuid())
-  userId             String
-  periodStart        DateTime
-  periodEnd          DateTime
+  id              String @id @default(uuid())
+  userId          String
+  payrollPeriodId String
+
   baseSalary         Int
   proratedSalary     Int
   totalPay           Int
@@ -123,14 +140,19 @@ model Payroll {
   totalReimbursement Int
   takeHomePay        Int
   createdBy          String
-  createdAt          DateTime @default(now())
-  isDeleted          Boolean  @default(false)
-  isLocked           Boolean  @default(false)
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime?
+  updatedBy          String?
+  deletedAt          DateTime?
+  deletedBy          String?
+  isDeleted          Boolean   @default(false)
+  isLocked           Boolean   @default(false)
 
   user           User            @relation(fields: [userId], references: [id])
+  payrollPeriod  PayrollPeriod   @relation(fields: [payrollPeriodId], references: [id])
   attendances    Attendance[]
   overtimes      Overtime[]
   reimbursements Reimbursement[]
 
-  @@unique([userId, periodStart, periodEnd])
+  @@unique([userId, payrollPeriodId])
 }

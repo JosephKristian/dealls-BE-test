@@ -18,12 +18,11 @@ export class PayrollRepository implements IPayrollRepository {
         return this.toDomain(created);
     }
 
-    async findByUserAndPeriod(userId: string, start: Date, end: Date): Promise<Payroll | null> {
+    async findByUserAndPeriod(userId: string, payrollPeriodId: string): Promise<Payroll | null> {
         const found = await this.prisma.payroll.findFirst({
             where: {
                 userId,
-                periodStart: new Date(start),
-                periodEnd: new Date(end),
+                payrollPeriodId: payrollPeriodId,
                 isDeleted: false,
             },
         });
@@ -31,19 +30,46 @@ export class PayrollRepository implements IPayrollRepository {
         return found ? this.toDomain(found) : null;
     }
 
+    async existsByPeriodId(payrollPeriodId: string): Promise<boolean> {
+        const found = await this.prisma.payroll.findFirst({
+            where: {
+                payrollPeriodId,
+                isDeleted: false,
+            },
+            select: {
+                id: true, 
+            },
+        });
+
+        return !!found; 
+    }
+
+    async findPeriodOverlaping(payrollPeriodId: string): Promise<Payroll | null> {
+        const found = await this.prisma.payroll.findFirst({
+            where: {
+                AND: {
+                    payrollPeriodId: payrollPeriodId
+                }
+            },
+        });
+
+        return found ? this.toDomain(found) : null;
+    }
+
+
+
     async getPayRollWithAllRelationById(
         userId: string,
-        periodStart: Date,
-        periodEnd: Date,
+        payrollPeriodId: string,
     ): Promise<Payroll | null> {
+        console.log('📄 Mencari payroll dengan:');
+        console.log('UserID:', userId);
+        console.log('PayrollPeriodID:', payrollPeriodId);
 
         const payroll = await this.prisma.payroll.findFirst({
             where: {
                 userId: userId,
-                periodStart: {
-                    gte: periodStart,
-                    lte: periodEnd,
-                },
+                payrollPeriodId: payrollPeriodId,
             },
             include: {
                 attendances: true,
@@ -53,20 +79,42 @@ export class PayrollRepository implements IPayrollRepository {
             },
         });
 
-        return this.toDomainWithRelations(payroll);
+        console.log('💾 Payroll ditemukan (raw Prisma result):', payroll);
+
+        const domainPayroll = this.toDomainWithRelations(payroll);
+        console.log('🔄 Payroll setelah konversi ke domain:', domainPayroll);
+
+        return domainPayroll;
+    }
+
+    async getAllPayrollsWithAllRelationsByPeriod(
+        payrollPeriodId: string
+    ): Promise<Payroll[]> {
+
+        const payrolls = await this.prisma.payroll.findMany({
+            where: {
+                payrollPeriodId: payrollPeriodId
+            },
+            include: {
+                attendances: true,
+                overtimes: true,
+                reimbursements: true,
+                user: true,
+            },
+        });
+
+        return this.toDomainWithRelationsList(payrolls);
     }
 
     private toDomain(raw: any): Payroll {
         return new Payroll({
             id: raw.id,
             userId: raw.userId,
-            periodStart: raw.periodStart,
-            periodEnd: raw.periodEnd,
+            payrollPeriodId: raw.payrollPeriodId,
             baseSalary: raw.baseSalary,
             proratedSalary: raw.proratedSalary,
             overtimePay: raw.overtimePay,
             totalOvertime: raw.totalOvertime,
-            reimbursementTotal: raw.reimbursementTotal,
             totalReimbursement: raw.totalReimbursement,
             totalPay: raw.totalPay,
             takeHomePay: raw.takeHomePay,
@@ -81,17 +129,19 @@ export class PayrollRepository implements IPayrollRepository {
         });
     }
 
+    private toDomainWithRelationsList(raws: any[]): Payroll[] {
+        return raws.map(raw => this.toDomainWithRelations(raw));
+    }
+
     private toDomainWithRelations(raw: any): Payroll {
         const payroll = new Payroll({
             id: raw.id,
             userId: raw.userId,
-            periodStart: raw.periodStart,
-            periodEnd: raw.periodEnd,
+            payrollPeriodId: raw.payrollPeriodId,
             baseSalary: raw.baseSalary,
             proratedSalary: raw.proratedSalary,
             overtimePay: raw.overtimePay,
             totalOvertime: raw.totalOvertime,
-            reimbursementTotal: raw.reimbursementTotal,
             totalReimbursement: raw.totalReimbursement,
             totalPay: raw.totalPay,
             takeHomePay: raw.takeHomePay,
@@ -182,8 +232,9 @@ export class PayrollRepository implements IPayrollRepository {
             user: {
                 connect: { id: payroll.userId },
             },
-            periodStart: payroll.periodStart,
-            periodEnd: payroll.periodEnd,
+            payrollPeriod: {
+                connect: { id: payroll.payrollPeriodId },
+            },
             baseSalary: payroll.baseSalary ?? 0,
             proratedSalary: isNaN(payroll.proratedSalary) ? 0 : payroll.proratedSalary,
             totalOvertime: payroll.totalOvertime ?? 0,

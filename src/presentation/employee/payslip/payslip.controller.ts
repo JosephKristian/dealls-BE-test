@@ -13,8 +13,8 @@ export class PayslipController {
     @UseGuards(JwtAuthGuard)
     async getPayslip(
         @CurrentUser() user,
-        @Param('year') year: string,
-        @Param('month') month: string,
+        @Param('year') year: number,
+        @Param('month') month: number,
     ) {
         console.log('User:', user);
 
@@ -25,13 +25,10 @@ export class PayslipController {
             throw new BadRequestException('Invalid year or month');
         }
 
-        const yearDate = new Date(parsedYear, 0, 1);
-        const monthDate = new Date(parsedYear, parsedMonth - 1, 1);
-
         const payroll = await this.payrollService.getPayslipByMonth(
             user.id,
-            yearDate,
-            monthDate,
+            year,
+            month,
         );
 
         if (!payroll) {

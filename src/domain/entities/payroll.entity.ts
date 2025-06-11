@@ -3,16 +3,16 @@ import { Attendance, Overtime, Reimbursement, User } from "@prisma/client";
 export class Payroll {
   id?: string;
   userId: string;
-  periodStart: Date;
-  periodEnd: Date;
+  payrollPeriodId: string;
+
   baseSalary: number;
   proratedSalary: number;
+  totalPay: number;
   overtimePay: number;
   totalOvertime: number;
-  reimbursementTotal: number;
   totalReimbursement: number;
-  totalPay: number;
   takeHomePay: number;
+
   isLocked: boolean;
   isDeleted: boolean;
 
@@ -23,12 +23,10 @@ export class Payroll {
   deletedAt?: Date;
   deletedBy?: string;
 
-  attendances?: Attendance[];  
+  user?: User;
+  attendances?: Attendance[];
   overtimes?: Overtime[];
   reimbursements?: Reimbursement[];
-  user?: User;
-
-  
 
   constructor(props: Payroll) {
     Object.assign(this, props);

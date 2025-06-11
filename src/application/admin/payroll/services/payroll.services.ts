@@ -1,4 +1,6 @@
-import { BadRequestException, Inject, Injectable, NotFoundException } from "@nestjs/common";
+import { BadRequestException, ConflictException, Inject, Injectable, NotFoundException } from "@nestjs/common";
+import { plainToInstance } from "class-transformer";
+import { PayslipResponseDto } from "src/application/employee/payslip/dto/payslip-response.dto";
 import { Payroll } from "src/domain/entities/payroll.entity";
 import { IAttendanceRepositoryToken } from "src/domain/repositories/attendance.repository";
 import { IOvertimeRepositoryToken } from "src/domain/repositories/overtime.repository";
@@ -11,12 +13,19 @@ import { OvertimeRepository } from "src/infrastructure/employee/overtime/overtim
 import { ReimbursementRepository } from "src/infrastructure/employee/reimbursement/reimbursement.repository.prisma";
 import { UserRepository } from "src/infrastructure/user/repositories/user.repository.prisma";
 import { AuditLogService } from "src/shared/audit-log/services/audit-log.service";
+import { CreatePayrollPeriodDto } from "../dto/payroll-period-submit.dto";
+import { IPayrollPeriodRepositoryToken } from "src/domain/repositories/payroll-period.repository";
+import { PayrollPeriodRepository } from "src/infrastructure/admin/payroll/payroll-period.repository.prisma";
+import { PayrollPeriod } from "src/domain/entities/payroll-period.entity";
+import { User } from "@prisma/client";
 
 @Injectable()
 export class PayrollService {
     constructor(
         @Inject(IPayrollRepositoryToken)
         private readonly payrollRepo: PayrollRepository,
+        @Inject(IPayrollPeriodRepositoryToken)
+        private readonly payrollPeriodRepo: PayrollPeriodRepository,
         @Inject(IAttendanceRepositoryToken)
         private readonly attendanceRepo: AttendanceRepository,
         @Inject(IOvertimeRepositoryToken)
@@ -28,9 +37,33 @@ export class PayrollService {
         private readonly auditLogService: AuditLogService,
     ) { }
 
+
+    async findAllEmployees(): Promise<any[]> {
+        return await this.userRepo.findAllByRole('EMPLOYEE');
+    }
+    async createPayrollPeriod(dto: CreatePayrollPeriodDto, requestId: string, performedBy: string) {
+        const start = new Date(dto.startDate);
+        const end = new Date(dto.endDate);
+
+        const overlapping = await this.payrollPeriodRepo.findOverlap(start, end);
+
+        if (overlapping) {
+            throw new ConflictException('Overlapping payroll period already exists');
+        }
+
+        const payrollPeriod = new PayrollPeriod({
+            periodStart: start,
+            periodEnd: end,
+            isLocked: false,
+            createdBy: 'system',
+            isDeleted: false,
+        });
+
+        return await this.payrollPeriodRepo.create(payrollPeriod);
+    }
     async runPayroll(
-        periodStart: Date,
-        periodEnd: Date,
+        year: number,
+        month: number,
         performedBy: string,
         requestId?: string
     ): Promise<{
@@ -47,12 +80,22 @@ export class PayrollService {
         };
 
         try {
+            const period = await this.payrollPeriodRepo.findOneByMonthAndYear(year, month   );
+
+            if (!period) {
+                throw new NotFoundException(`No payroll period found for ${month}/${year}`);
+            }
+
+            if (!period || !period.id) {
+                throw new NotFoundException('Payroll period not found or invalid');
+            }
+
             const users = await this.userRepo.findAllEmployees();
             if (!users || users.length === 0) {
                 throw new NotFoundException('No employees found');
             }
 
-            const totalWorkingDays = this.countWeekdays(periodStart, periodEnd);
+            const totalWorkingDays = this.countWeekdays(period.periodStart, period.periodEnd);
             if (totalWorkingDays <= 0) {
                 throw new BadRequestException('No working days in the specified period');
             }
@@ -64,12 +107,12 @@ export class PayrollService {
                     }
 
                     const [attendances, overtimes, reimbursements] = await Promise.all([
-                        this.attendanceRepo.findByUserAndPeriod(user.id, periodStart, periodEnd),
-                        this.overtimeRepo.findByUserAndPeriod(user.id, periodStart, periodEnd),
-                        this.reimbursementRepo.findByUserAndPeriod(user.id, periodStart, periodEnd),
+                        this.attendanceRepo.findByUserAndPeriod(user.id, period.periodStart, period.periodEnd),
+                        this.overtimeRepo.findByUserAndPeriod(user.id, period.periodStart, period.periodEnd),
+                        this.reimbursementRepo.findByUserAndPeriod(user.id, period.periodStart, period.periodEnd),
                     ]);
 
-                    const existing = await this.payrollRepo.findByUserAndPeriod(user.id, periodStart, periodEnd);
+                    const existing = await this.payrollRepo.findByUserAndPeriod(user.id, period.id);
                     if (existing) {
                         result.skippedUsers++;
                         continue;
@@ -86,8 +129,7 @@ export class PayrollService {
 
                     const payrollData = {
                         userId: user.id,
-                        periodStart,
-                        periodEnd,
+                        payrollPeriodId: period.id!,
                         baseSalary: user.salary,
                         proratedSalary,
                         overtimePay,
@@ -107,7 +149,6 @@ export class PayrollService {
 
                     const saved = await this.payrollRepo.create(new Payroll(payrollData));
 
-                    console.log("reimburse", reimbursements)
                     await Promise.all([
                         ...attendances.map(async att => {
                             try {
@@ -200,12 +241,82 @@ export class PayrollService {
         }
     }
 
-    async getPayslipByMonth(userId: string, year: Date, month: Date) {
-        const periodStart = new Date(year.getFullYear(), month.getMonth(), 1);
-        const periodEnd = new Date(year.getFullYear(), month.getMonth() + 1, 0);
-        const payroll = await this.payrollRepo.getPayRollWithAllRelationById(userId, periodStart, periodEnd);
+    async getPayslipByMonth(userId: string, year: number, month: number) {
+        console.log('📅 getPayslipByMonth dipanggil dengan:');
+        console.log('UserID:', userId);
+        console.log('Year:', year);
+        console.log('Month:', month);
 
-        return payroll
+        const period = await this.payrollPeriodRepo.findOneByMonthAndYear(year, month); // ⚠️ Pastikan urutan benar!
+        console.log('🧾 Payroll Period ditemukan:', period);
+
+        if (!period) {
+            console.warn(`⚠️ Tidak ditemukan payroll period untuk ${month}/${year}`);
+            throw new NotFoundException(`No payroll period found for ${month}/${year}`);
+        }
+        const checkPayrol = await this.payrollRepo.existsByPeriodId(period.id!)
+        if (!checkPayrol) {
+            throw new NotFoundException(`Payslip for ${month}/${year} is not available yet. Please contact the admin.`);
+        }
+        const payroll = await this.payrollRepo.getPayRollWithAllRelationById(userId, period.id!);
+
+
+        console.log('💰 Payroll ditemukan:', payroll);
+
+        return payroll;
+    }
+
+    async getAllPayslipByMonth(
+        year: number,
+        month: number,
+        page: number = 1,
+        limit: number = 10
+    ) {
+        const period = await this.payrollPeriodRepo.findOneByMonthAndYear(year, month);
+        if (!period) {
+            throw new NotFoundException(`No payroll period found for ${month}/${year}`);
+        }
+
+        const checkPayrol = await this.payrollRepo.existsByPeriodId(period.id!)
+        if (!checkPayrol) {
+            throw new NotFoundException(`Payslip for ${month}/${year} is not available yet. Please contact the admin.`);
+        }
+
+        const allPayrolls = await this.payrollRepo.getAllPayrollsWithAllRelationsByPeriod(period.id!);
+
+        const allSummaries = allPayrolls.map(p => ({
+            userId: p.userId,
+            username: p.user?.username ?? '-',
+            baseSalary: p.baseSalary,
+            proratedSalary: p.proratedSalary,
+            overtimePay: p.overtimePay,
+            totalReimbursement: p.totalReimbursement,
+            takeHomePay: p.takeHomePay,
+        }));
+
+        // Hitung total keseluruhan
+        const totalTakeHomePay = allSummaries.reduce((sum, p) => sum + (p.takeHomePay ?? 0), 0);
+        const totalProratedSalary = allSummaries.reduce((sum, p) => sum + (p.proratedSalary ?? 0), 0);
+        const totalOvertime = allSummaries.reduce((sum, p) => sum + (p.overtimePay ?? 0), 0);
+        const totalReimbursement = allSummaries.reduce((sum, p) => sum + (p.totalReimbursement ?? 0), 0);
+
+        // Pagination
+        const startIndex = (page - 1) * limit;
+        const endIndex = page * limit;
+        const paginatedSummaries = allSummaries.slice(startIndex, endIndex);
+
+        return {
+            totalTakeHomePay,
+            totalProratedSalary,
+            totalOvertime,
+            totalReimbursement,
+            pagination: {
+                page,
+                limit,
+                total: allSummaries.length,
+            },
+            summaries: paginatedSummaries,
+        };
     }
 
     private countWeekdays(startDate: Date, endDate: Date): number {

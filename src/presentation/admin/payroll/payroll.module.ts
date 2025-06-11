@@ -16,6 +16,8 @@ import { IAttendanceRepositoryToken } from "src/domain/repositories/attendance.r
 import { IOvertimeRepositoryToken } from "src/domain/repositories/overtime.repository";
 import { IReimbursementRepositoryToken } from "src/domain/repositories/reimbursement.repository";
 import { IUserRepositoryToken } from "src/domain/repositories/user.repository";
+import { IPayrollPeriodRepositoryToken } from "src/domain/repositories/payroll-period.repository";
+import { PayrollPeriodRepository } from "src/infrastructure/admin/payroll/payroll-period.repository.prisma";
 
 @Module({
     imports: [
@@ -30,6 +32,10 @@ import { IUserRepositoryToken } from "src/domain/repositories/user.repository";
         {
             provide: IPayrollRepositoryToken,
             useClass: PayrollRepository,
+        },
+        {
+            provide: IPayrollPeriodRepositoryToken,
+            useClass: PayrollPeriodRepository,
         },
         {
             provide: IAttendanceRepositoryToken,

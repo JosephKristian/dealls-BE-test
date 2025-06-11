@@ -14,8 +14,6 @@ export class AttendanceService {
   ) { }
 
   async submitAttendance(userId: string, createdBy: string, customDate?: Date, requestId?: string): Promise<Attendance> {
-    console.log('[submitAttendance] userId:', userId);
-    console.log('[submitAttendance] createdBy:', createdBy);
 
     const user = await this.userRepository.findById(userId);
 
@@ -39,7 +37,7 @@ export class AttendanceService {
     }
 
     const day = today.getDay();
-    console.log('[submitAttendance] Today is:', today.toDateString(), 'Day:', day);
+
 
     if (day === 0 || day === 6) {
       console.warn('[submitAttendance] Attempt to submit on weekend');
@@ -47,7 +45,6 @@ export class AttendanceService {
     }
 
     const existing = await this.attendanceRepository.findByUserIdAndDate(userId, today);
-    console.log('[submitAttendance] Existing attendance record:', existing);
 
     if (existing) {
       console.info('[submitAttendance] Attendance already submitted today, updating timestamp...');

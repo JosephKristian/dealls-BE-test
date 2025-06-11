@@ -1,0 +1,138 @@
+{
+	"info": {
+		"_postman_id": "ef55609c-08f5-409e-ae03-0836ba5a26e2",
+		"name": "Auth",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "38205387",
+		"_collection_link": "https://www.postman.com/josephkt/workspace/dealls/collection/38205387-ef55609c-08f5-409e-ae03-0836ba5a26e2?action=share&source=collection_link&creator=38205387"
+	},
+	"item": [
+		{
+			"name": "Auth - Register Employee",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "x-request-id",
+						"value": "req-register-employee",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"username\": \"employee2ds2042sd5@mail.com\",\n  \"email\": \"employee02aa@mail.com\",\n  \"password\": \"password123\",\n  \"role\": \"employee\"\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/auth/register",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"auth",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Auth - Login Employee",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonData = pm.response.json();",
+							"",
+							"if (jsonData.data && jsonData.data.access_token) {",
+							"  pm.environment.set(\"accessToken\", jsonData.data.access_token);",
+							"  pm.environment.set(\"tokenType\", jsonData.data.token_type || \"Bearer\");",
+							"}",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "x-request-id",
+						"value": "req-login-employee",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"username\": \"moriah5699\",\n  \"password\": \"password123\"\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/auth/login",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"auth",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Auth - Login Admin",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonData = pm.response.json();",
+							"",
+							"if (jsonData.data && jsonData.data.access_token) {",
+							"  pm.environment.set(\"accessToken\", jsonData.data.access_token);",
+							"  pm.environment.set(\"tokenType\", jsonData.data.token_type || \"Bearer\");",
+							"}",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"username\": \"admin\",\n  \"password\": \"admin123\"\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/auth/login",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"auth",
+						"login"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

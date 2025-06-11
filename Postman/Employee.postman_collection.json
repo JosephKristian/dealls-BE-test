@@ -1,0 +1,171 @@
+{
+	"info": {
+		"_postman_id": "9e9193b0-aeea-4111-acbb-b12e2966bfad",
+		"name": "Employee",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "38205387",
+		"_collection_link": "https://www.postman.com/josephkt/workspace/dealls/collection/38205387-9e9193b0-aeea-4111-acbb-b12e2966bfad?action=share&source=collection_link&creator=38205387"
+	},
+	"item": [
+		{
+			"name": "Employee - Submit Attendance",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{tokenType}} {{accessToken}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "x-request-id",
+						"value": "req-employee-submit-attendance",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"date\": \"2025-06-11T21:30:00\"\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/employee/attendance",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"employee",
+						"attendance"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Employee - Submit Overtime",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{tokenType}} {{accessToken}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "x-request-id",
+						"value": "req-employee-overtime",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"date\": \"2025-06-11\",\n  \"hours\": 2\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/employee/overtime",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"employee",
+						"overtime"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Employee - Submit Reimbursement",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{tokenType}} {{accessToken}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "x-request-id",
+						"value": "req-employee-reimbursement",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"date\": \"2025-06-11\",\n  \"amount\": 500000,\n  \"description\": \"Office supplies\"\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/employee/reimbursement",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"employee",
+						"reimbursement"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Employee - Generate Payslip",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{tokenType}} {{accessToken}}"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/employee/payslip/:year/:month",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"employee",
+						"payslip",
+						":year",
+						":month"
+					],
+					"variable": [
+						{
+							"key": "year",
+							"value": "2025"
+						},
+						{
+							"key": "month",
+							"value": "6"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:3000/api",
+			"type": "string"
+		},
+		{
+			"key": "admin_token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "employee_token",
+			"value": "",
+			"type": "string"
+		}
+	]
+}

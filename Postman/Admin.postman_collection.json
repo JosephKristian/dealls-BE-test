@@ -1,0 +1,162 @@
+{
+	"info": {
+		"_postman_id": "72d20aad-5711-4b2b-b1c3-ac07520b50fe",
+		"name": "Admin",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "38205387",
+		"_collection_link": "https://www.postman.com/josephkt/workspace/dealls/collection/38205387-72d20aad-5711-4b2b-b1c3-ac07520b50fe?action=share&source=collection_link&creator=38205387"
+	},
+	"item": [
+		{
+			"name": "Admin - Create Attendance Period",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{tokenType}} {{accessToken}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"startDate\": \"2025-06-25\",\n  \"endDate\": \"2025-07-24\"\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/admin/payroll-period",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"admin",
+						"payroll-period"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Admin - Run Payroll",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{tokenType}} {{accessToken}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "x-request-id",
+						"value": "req-admin-run-payroll",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"year\": 2025,\r\n    \"month\": 6\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/admin/run-payroll/?page=1&limit=10",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"admin",
+						"run-payroll",
+						""
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "1"
+						},
+						{
+							"key": "limit",
+							"value": "10"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Admin - Generate Payslip Summary",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{tokenType}} {{accessToken}}"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/admin/payslip-summary/:year/:month?page=1&limit=10",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"admin",
+						"payslip-summary",
+						":year",
+						":month"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "1"
+						},
+						{
+							"key": "limit",
+							"value": "10"
+						}
+					],
+					"variable": [
+						{
+							"key": "year",
+							"value": "2025"
+						},
+						{
+							"key": "month",
+							"value": "06"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Admin - All Employees",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{tokenType}} {{accessToken}}"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/admin/employees",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"admin",
+						"employees"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
