@@ -169,8 +169,9 @@ Uses `.env.test` for test configuration.
 ### Run Tests:
 
 ```bash
-npm test             # Run all tests
+npm run migrate:test 
 npm run test:user    # Run a specific unit test
+npm run test:auth    # Run a specific unit test
 npm run test:e2e     # Run end-to-end tests
 ```
 
