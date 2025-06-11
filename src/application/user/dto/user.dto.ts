@@ -1,7 +1,7 @@
 export enum UserRole {
-  Admin = 'admin',
-  Employee = 'employee',
-  User = 'user',
+  Admin = 'ADMIN',
+  Employee = 'EMPLOYEE',
+  User = 'USER',
 }
 
 export class CreateUserDto {

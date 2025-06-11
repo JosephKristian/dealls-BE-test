@@ -1,22 +1,28 @@
 import 'dotenv/config';
 import { PrismaClient } from '@prisma/client';
-import { CreateUserDto } from 'src/application/user/dto/user.dto';
+import { CreateUserDto, UserRole } from 'src/application/user/dto/user.dto';
 import { CreateUserUseCase } from 'src/application/user/use-cases/create-user.use-case';
 import { UserRepository } from 'src/infrastructure/user/repositories/user.repository.prisma';
 
+// Extend PrismaClient to match PrismaService interface
+class MockPrismaService extends PrismaClient {
+    async onModuleInit() { }
+    async onModuleDestroy() { }
+}
+
 describe('CreateUserUseCase', () => {
-    let prisma: PrismaClient;
+    let prisma: MockPrismaService;
     let repo: UserRepository;
     let useCase: CreateUserUseCase;
 
-    beforeEach(async () => {
-        await prisma.user.deleteMany({});
-    });
-
     beforeAll(() => {
-        prisma = new PrismaClient();
+        prisma = new MockPrismaService();
         repo = new UserRepository(prisma);
         useCase = new CreateUserUseCase(repo);
+    });
+
+    beforeEach(async () => {
+        await prisma.user.deleteMany({});
     });
 
     afterAll(async () => {
@@ -29,6 +35,7 @@ describe('CreateUserUseCase', () => {
             email: 'joey@test.com',
             password: '123456',
             createdBy: 'system',
+            role: UserRole.Employee,
         };
 
         const result = await useCase.execute(dto);
@@ -42,6 +49,7 @@ describe('CreateUserUseCase', () => {
             email: 'no-username@test.com',
             password: '123456',
             createdBy: 'system',
+            role: UserRole.Employee,
         };
 
         await expect(useCase.execute(dto as CreateUserDto)).rejects.toThrowError(/username is required/i);
@@ -53,6 +61,7 @@ describe('CreateUserUseCase', () => {
             email: 'not-an-email',
             password: '123456',
             createdBy: 'system',
+            role: UserRole.Employee,
         };
 
         await expect(useCase.execute(dto)).rejects.toThrowError(/invalid email/i);
@@ -64,9 +73,9 @@ describe('CreateUserUseCase', () => {
             email: 'shortpass@test.com',
             password: '123',
             createdBy: 'system',
+            role: UserRole.Employee,
         };
 
         await expect(useCase.execute(dto)).rejects.toThrowError(/password must be at least/i);
     });
-
 });
