@@ -106,6 +106,10 @@ The Postman collection for testing the API is available inside the `/postman` fo
 * Import it into Postman to test all endpoints easily.
 * Make sure your `.env` file has the correct local API URL and DB connection.
 
+or
+
+https://web.postman.co/workspace/ca6cbfb4-77f6-4403-8b4d-04e8c8ea668f
+
 ---
 
 ## ✅ Functional Features
