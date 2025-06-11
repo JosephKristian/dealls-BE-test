@@ -133,7 +133,7 @@ Setiap aksi penting seperti `create`, `update`, atau `delete` terhadap entitas s
 | ------------- | -------------------------------------------------------------- |
 | `entity`      | Nama entitas (contoh: `Payroll`, `Attendance`)                 |
 | `entityId`    | ID dari entitas yang dimodifikasi                              |
-| `action`      | Jenis aksi (`CREATE`, `UPDATE`, `DELETE`)                      |
+| `action`      | Jenis aksi (`CREATE`, `UPDATE`, `DELETE`, `LOGIN`)                      |
 | `performedBy` | User yang melakukan aksi                                       |
 | `ipAddress`   | Alamat IP pengakses (jika disediakan)                          |
 | `requestId`   | ID unik untuk setiap request (jika middleware-nya diaktifkan)  |
